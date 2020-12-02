@@ -1,24 +1,34 @@
 package br.com.GamesPlat.api.models;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-@Entity
-public class Usuario {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+@Entity
+public class Usuario implements UserDetails {
+
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String username;
-	private String login;
-	private String password;
+	private String nickname;
+	private String senha;
 	private String email;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<Perfil> perfis = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "autor")
 	private List<Review> reviews = new ArrayList<>();
@@ -27,20 +37,19 @@ public class Usuario {
 		
 	}
 	
-	public Usuario(String login, String username, String password, String email) {
-		this.login = login;
-		this.username = username;
-		this.password = password;
+	public Usuario(String nickname, String senha, String email) {
+		this.nickname = nickname;
+		this.senha = senha;
 		this.email = email;
 	}
 
 	
-	public String getLogin() {
-		return login;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setNickname(String login) {
+		this.nickname = login;
 	}
 
 	public Long getId() {
@@ -51,20 +60,13 @@ public class Usuario {
 		this.id = id;
 	}
 
-	public String getUsername() {
-		return username;
+
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+	public void setSenha(String password) {
+		this.senha = password;
 	}
 
 	public String getEmail() {
@@ -81,6 +83,41 @@ public class Usuario {
 
 	public void setReviews(List<Review> reviews) {
 		this.reviews = reviews;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.perfis;
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.senha;
 	}
 
 	

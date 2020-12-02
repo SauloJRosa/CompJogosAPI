@@ -5,30 +5,22 @@ import java.util.Optional;
 import br.com.GamesPlat.api.models.Usuario;
 
 public class UsuarioDto {
-	
-	private String login;
-	private String username;
+
+	private String nickname;
 	private String email;
-	
+
 	public UsuarioDto(Optional<Usuario> user) {
-		this.login = user.get().getLogin();
-		this.username = user.get().getUsername();
+		this.nickname = user.get().getNickname();
 		this.email = user.get().getEmail();
 	}
 
 	public UsuarioDto(Usuario user) {
-		this.login = user.getLogin();
-		this.username = user.getUsername();
+		this.nickname = user.getNickname();
 		this.email = user.getEmail();
 	}
 
-	
-	public String getLogin() {
-		return login;
-	}
-
-	public String getUsername() {
-		return username;
+	public String getNickname() {
+		return nickname;
 	}
 
 	public String getEmail() {

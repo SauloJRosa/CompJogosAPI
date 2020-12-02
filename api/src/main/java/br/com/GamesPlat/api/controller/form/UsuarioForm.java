@@ -10,39 +10,28 @@ public class UsuarioForm {
 
 	@NotNull
 	@NotEmpty
-	private String username;
+	private String nickname;
 	@NotNull
 	@NotEmpty
-	private String login;
-	@NotNull
-	@NotEmpty
-	private String password;
+	private String senha;
 	@NotNull
 	@NotEmpty
 	private String email;
 
-	public String getLogin() {
-		return login;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public String getEmail() {
@@ -55,7 +44,7 @@ public class UsuarioForm {
 
 	public Usuario converter(UsuarioRepository usuarioRepository) {
 
-		return new Usuario(this.login, this.username, this.password, this.email);
+		return new Usuario(this.nickname, this.senha, this.email);
 	}
 
 }

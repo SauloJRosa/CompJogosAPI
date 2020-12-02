@@ -12,43 +12,31 @@ public class AtualizacaoUsuarioForm {
 
 	@NotNull
 	@NotEmpty
-	private String username;
+	private String nickname;
 	@NotNull
 	@NotEmpty
-	private String password;
-	@NotNull
-	@NotEmpty
-	private String email;
+	private String senha;
 
-	public String getUsername() {
-		return username;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setNickname(String username) {
+		this.nickname = username;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+	public void setSenha(String password) {
+		this.senha = password;
 	}
 
 	public Usuario atualizar(Long id, UsuarioRepository usuarioRepository) {
 		Optional<Usuario> user = usuarioRepository.findById(id);
-		user.get().setUsername(this.username);
-		user.get().setEmail(this.email);
-		user.get().setPassword(this.password);
+		user.get().setNickname(this.nickname);
+		user.get().setSenha(this.senha);
 		
 		return user.get();
 	}
