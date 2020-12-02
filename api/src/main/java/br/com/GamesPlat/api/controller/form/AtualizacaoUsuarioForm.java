@@ -1,33 +1,24 @@
 package br.com.GamesPlat.api.controller.form;
 
+import java.util.Optional;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import br.com.GamesPlat.api.models.Usuario;
 import br.com.GamesPlat.api.repository.UsuarioRepository;
 
-public class UsuarioForm {
+public class AtualizacaoUsuarioForm {
 
 	@NotNull
 	@NotEmpty
 	private String username;
 	@NotNull
 	@NotEmpty
-	private String login;
-	@NotNull
-	@NotEmpty
 	private String password;
 	@NotNull
 	@NotEmpty
 	private String email;
-
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
 
 	public String getUsername() {
 		return username;
@@ -53,9 +44,13 @@ public class UsuarioForm {
 		this.email = email;
 	}
 
-	public Usuario converter(UsuarioRepository usuarioRepository) {
-
-		return new Usuario(this.login, this.username, this.password, this.email);
+	public Usuario atualizar(Long id, UsuarioRepository usuarioRepository) {
+		Optional<Usuario> user = usuarioRepository.findById(id);
+		user.get().setUsername(this.username);
+		user.get().setEmail(this.email);
+		user.get().setPassword(this.password);
+		
+		return user.get();
 	}
-
+	
 }
