@@ -22,12 +22,12 @@ public class JogoDto {
 		this.titulo = titulo;
 	}
 
-	public String getPrecoOrginal() {
+	public String getPrecoOriginal() {
 		return precoOriginal;
 	}
 
-	public void setPrecoOrginal(String precoOrginal) {
-		this.precoOriginal = precoOrginal;
+	public void setPrecoOriginal(String precoOriginal) {
+		this.precoOriginal = precoOriginal;
 	}
 
 	public String getDesconto() {
