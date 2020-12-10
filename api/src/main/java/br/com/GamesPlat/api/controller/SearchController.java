@@ -35,6 +35,20 @@ public class SearchController {
 		
 		return ResponseEntity.ok(plataformas);
 	}
+	
+	@GetMapping("/gog")
+	public ResponseEntity<ListaJogosDto> pesquisarJogosGog(String jogo){
+		return ResponseEntity.ok(new ConnectionGog().obterJogos(jogo));
+	}
 
+	@GetMapping("/steam")
+	public ResponseEntity<ListaJogosDto> pesquisarJogosSteam(String jogo){
+		return ResponseEntity.ok(new ConnectionSteam().obterJogos(jogo));
+	}
+	
+	@GetMapping("/epic")
+	public ResponseEntity<ListaJogosDto> pesquisarJogosEpic(String jogo){
+		return ResponseEntity.ok(new ConnectionEpic().obterJogos(jogo));
+	}
 
 }

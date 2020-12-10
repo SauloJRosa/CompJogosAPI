@@ -3,7 +3,6 @@ package br.com.GamesPlat.api.controller.connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import br.com.GamesPlat.api.controller.dto.JogoDto;
@@ -25,8 +24,6 @@ public ListaJogosDto obterJogos(String jogo) {
 			
 			for (int i = 0; i < myresponse.getJSONObject("applist").getJSONArray("apps").length(); i++) {
 				String nome = myresponse.getJSONObject("applist").getJSONArray("apps").getJSONObject(i).getString("name");
-				
-				//(nome.toLowerCase().contains(jogo.toLowerCase()))
 				
 				if  (nome.toLowerCase().contains(jogo.toLowerCase())) {
 					ids.add(myresponse.getJSONObject("applist").getJSONArray("apps").getJSONObject(i).getString("appid"));
