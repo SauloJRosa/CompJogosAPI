@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Review {
+public class Comentario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +17,23 @@ public class Review {
 
 	@ManyToOne
 	private Usuario autor;
-	private String review;
+	private String plataforma;
+	private String jogo;
+	private String comentario;
 	private LocalDateTime dataCriacao = LocalDateTime.now();
-	
 	private double nota; 
 	
+	public Comentario() {
+	}
+	
+	public Comentario(Usuario autor, String plataforma, String jogo, String comentario, double nota) {
+		this.autor = autor;
+		this.plataforma = plataforma;
+		this.jogo = jogo;
+		this.comentario = comentario;
+		this.nota = nota;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -38,12 +50,12 @@ public class Review {
 		this.autor = autor;
 	}
 
-	public String getReview() {
-		return review;
+	public String getComentario() {
+		return comentario;
 	}
 
-	public void setReview(String review) {
-		this.review = review;
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
 	}
 
 	public LocalDateTime getDataCriacao() {
@@ -61,7 +73,21 @@ public class Review {
 	public void setNota(double nota) {
 		this.nota = nota;
 	}
-	
-	
+
+	public String getPlataforma() {
+		return plataforma;
+	}
+
+	public void setPlataforma(String plataforma) {
+		this.plataforma = plataforma;
+	}
+
+	public String getJogo() {
+		return jogo;
+	}
+
+	public void setJogo(String jogo) {
+		this.jogo = jogo;
+	}
 
 }

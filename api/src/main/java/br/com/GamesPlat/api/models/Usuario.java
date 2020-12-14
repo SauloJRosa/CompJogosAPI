@@ -31,7 +31,7 @@ public class Usuario implements UserDetails {
 	private List<Perfil> perfis = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "autor")
-	private List<Review> reviews = new ArrayList<>();
+	private List<Comentario> comentarios = new ArrayList<>();
 
 	public Usuario() {
 		
@@ -77,12 +77,12 @@ public class Usuario implements UserDetails {
 		this.email = email;
 	}
 
-	public List<Review> getReviews() {
-		return reviews;
+	public List<Comentario> getComentarios() {
+		return comentarios;
 	}
 
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
+	public void setComentarios(List<Comentario> comentarios) {
+		this.comentarios = comentarios;
 	}
 
 	@Override
