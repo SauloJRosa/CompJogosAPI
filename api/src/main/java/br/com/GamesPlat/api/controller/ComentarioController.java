@@ -9,7 +9,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,11 +47,6 @@ public class ComentarioController {
 		
 		new ComentarioDto();
 		List<ComentarioDto> listaComentariosDto = ComentarioDto.converter(listaComentarios);
-//		
-//		for (Optional<Comentario> comentario : listaComentarios) {
-//			ComentarioDto comentarioDto = new ComentarioDto(comentario.get());
-//			listaComentariosDto.add(comentarioDto);
-//		}
 		
 		return ResponseEntity.ok().body(listaComentariosDto);
 	}
@@ -68,13 +65,20 @@ public class ComentarioController {
 		return ResponseEntity.ok().body(new ComentarioDto(comentario));
 	}
 	
-//	@DeleteMapping
-//	@Transactional
-//	public ResponseEntity<?> removerComentario(HttpServletRequest request){
-//		
-//		Long idUsuarioLogado = idUsuarioLogado(request);
-//		
-//	}
+	@DeleteMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> removerComentario(HttpServletRequest request, @PathVariable Long id){
+		
+		Long idUsuarioLogado = idUsuarioLogado(request);
+		
+		Optional<Comentario> comentario = comentarioRepository.findByIdAndAutorId(id, idUsuarioLogado);
+		if(comentario.isPresent()) {
+			comentarioRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.badRequest().build();
+		
+	}
 	
 	
 	private Long idUsuarioLogado(HttpServletRequest request) {

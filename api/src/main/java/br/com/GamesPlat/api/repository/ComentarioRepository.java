@@ -10,5 +10,6 @@ import br.com.GamesPlat.api.models.Comentario;
 public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
 	
 	List<Optional<Comentario>> findByJogoAndPlataforma(String jogo, String plataforma);
+	Optional<Comentario> findByIdAndAutorId(Long idComentario, Long idUsuario);
 	
 }

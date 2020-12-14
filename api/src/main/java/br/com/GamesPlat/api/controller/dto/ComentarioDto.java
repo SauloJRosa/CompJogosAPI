@@ -9,12 +9,17 @@ import br.com.GamesPlat.api.models.Comentario;
 
 public class ComentarioDto {
 
+	private Long id;
 	private String autor;
 	private String plataforma;
 	private String jogo;
 	private String comentario;
 	private LocalDateTime dataCriacao;
 	private double nota;
+
+	public Long getId() {
+		return id;
+	}
 
 	public String getAutor() {
 		return autor;
@@ -41,6 +46,7 @@ public class ComentarioDto {
 	}
 
 	public ComentarioDto(Comentario comentario) {
+		this.id = comentario.getId();
 		this.autor = comentario.getAutor().getNickname();
 		this.plataforma = comentario.getPlataforma();
 		this.jogo = comentario.getJogo();
@@ -49,7 +55,8 @@ public class ComentarioDto {
 		this.nota = comentario.getNota();
 	}
 
-	public ComentarioDto(Optional<Comentario> comentario){
+	public ComentarioDto(Optional<Comentario> comentario) {
+		this.id = comentario.get().getId();
 		this.autor = comentario.get().getAutor().getNickname();
 		this.plataforma = comentario.get().getPlataforma();
 		this.jogo = comentario.get().getJogo();
@@ -57,11 +64,12 @@ public class ComentarioDto {
 		this.dataCriacao = comentario.get().getDataCriacao();
 		this.nota = comentario.get().getNota();
 	}
-	
-	public ComentarioDto(){}
-	
+
+	public ComentarioDto() {
+	}
+
 	public static List<ComentarioDto> converter(List<Optional<Comentario>> comentarios) {
-	     return comentarios.stream().map(ComentarioDto::new).collect(Collectors.toList());
-	    }
-	
+		return comentarios.stream().map(ComentarioDto::new).collect(Collectors.toList());
+	}
+
 }
