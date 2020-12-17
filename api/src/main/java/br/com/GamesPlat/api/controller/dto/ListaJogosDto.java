@@ -8,6 +8,13 @@ public class ListaJogosDto {
 	private String plataforma;
 	private List<JogoDto> jogos = new ArrayList<>();
 
+	public ListaJogosDto(){}
+	
+	public ListaJogosDto(String plataforma, List<JogoDto> jogos) {
+		this.plataforma = plataforma;
+		this.jogos = jogos;
+	}
+
 	public String getPlataforma() {
 		return plataforma;
 	}

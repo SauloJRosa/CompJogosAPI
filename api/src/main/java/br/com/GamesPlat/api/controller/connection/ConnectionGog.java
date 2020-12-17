@@ -9,7 +9,7 @@ public class ConnectionGog {
 	
 	public ListaJogosDto obterJogos(String jogo) {
 		String jogoedit = jogo.replaceAll(" ", "+");
-		String urljogo = "https://embed.gog.com/games/ajax/filtered?mediaType=game&search=" + jogoedit;
+		String urljogo = "https://embed.gog.com/games/ajax/filtered?mediaType=game&search=" + jogoedit + "&limit=" + 30 + "&page=" + 1;
 		JSONObject myresponse = new ConexaoAPIExterna().Conexao(urljogo);
 
 		ListaJogosDto gogJogos = new ListaJogosDto();
