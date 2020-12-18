@@ -7,9 +7,9 @@ import br.com.GamesPlat.api.controller.dto.ListaJogosDto;
 
 public class ConnectionGog {
 	
-	public ListaJogosDto obterJogos(String jogo) {
+	public ListaJogosDto obterJogos(String jogo, String hide, String sort) {
 		String jogoedit = jogo.replaceAll(" ", "+");
-		String urljogo = "https://embed.gog.com/games/ajax/filtered?mediaType=game&search=" + jogoedit + "&limit=" + 30 + "&page=" + 1;
+		String urljogo = "https://embed.gog.com/games/ajax/filtered?mediaType=game&search=" + jogoedit + "&limit=" + 30 + "&page=" + 1 + "&hide=" + hide + "&sort=popularity";
 		JSONObject myresponse = new ConexaoAPIExterna().Conexao(urljogo);
 
 		ListaJogosDto gogJogos = new ListaJogosDto();
@@ -29,6 +29,11 @@ public class ConnectionGog {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		
+		if(sort.equals("price")) {
+			gogJogos.getJogos().sort((j1, j2) -> Double.compare(j1.converterPrecoEmDouble(), j2.converterPrecoEmDouble()));
+		}
+		
 		return gogJogos;
 	}
 

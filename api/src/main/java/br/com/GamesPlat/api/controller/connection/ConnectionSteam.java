@@ -10,7 +10,7 @@ import br.com.GamesPlat.api.controller.dto.ListaJogosDto;
 
 public class ConnectionSteam {
 
-public ListaJogosDto obterJogos(String jogo) {
+public ListaJogosDto obterJogos(String jogo, String hide, String sort) {
 		
 		String url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
 		JSONObject myresponse = new ConexaoAPIExterna().Conexao(url);
@@ -40,6 +40,10 @@ public ListaJogosDto obterJogos(String jogo) {
 						continue;
 					}
 				} catch (Exception e) {
+					continue;
+				}
+				
+				if(hide.equals("dlc") && myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("type").equals("dlc")) {
 					continue;
 				}
 				
@@ -75,6 +79,10 @@ public ListaJogosDto obterJogos(String jogo) {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+		}
+		
+		if(sort.equals("price")) {
+			steamJogos.getJogos().sort((j1, j2) -> Double.compare(j1.converterPrecoEmDouble(), j2.converterPrecoEmDouble()));
 		}
 		
 		return steamJogos;

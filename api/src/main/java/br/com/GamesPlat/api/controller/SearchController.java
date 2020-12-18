@@ -32,16 +32,18 @@ public class SearchController {
 	@GetMapping
 	public ResponseEntity<Page<ListaJogosDto>> pesquisarJogos(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "6") Integer size)
+			@RequestParam(defaultValue = "6") Integer size,
+			@RequestParam(defaultValue = "") String hide,
+			@RequestParam(defaultValue = "") String sort)
 			throws URISyntaxException, IOException, InterruptedException {
 
 		ListaPlataformasDto plataformas = new ListaPlataformasDto();
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("GOG", pesquisarJogosGog(jogo, page, size).getBody().getContent()));
+		plataformas.getPlataformas().add(new ListaJogosDto("GOG", pesquisarJogosGog(jogo, page, size, hide, sort).getBody().getContent()));
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("STEAM", pesquisarJogosSteam(jogo, page, size).getBody().getContent()));
+		plataformas.getPlataformas().add(new ListaJogosDto("STEAM", pesquisarJogosSteam(jogo, page, size, hide, sort).getBody().getContent()));
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("Epic Games", pesquisarJogosEpic(jogo, page, size).getBody().getContent())); 
+		plataformas.getPlataformas().add(new ListaJogosDto("Epic Games", pesquisarJogosEpic(jogo, page, size, sort).getBody().getContent())); 
 		
 		int total = 0;
 		for (int i = 0; i < plataformas.getPlataformas().size(); i++) {
@@ -57,26 +59,31 @@ public class SearchController {
 	@GetMapping("/gog")
 	public ResponseEntity<Page<JogoDto>> pesquisarJogosGog(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer size){
+			@RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(defaultValue = "") String hide,
+			@RequestParam(defaultValue = "") String sort){
 		
-		return paginacao(page, size, new ConnectionGog().obterJogos(jogo));
+		return paginacao(page, size, new ConnectionGog().obterJogos(jogo, hide, sort));
 	}
 	
 	@GetMapping("/epic")
 	public ResponseEntity<Page<JogoDto>> pesquisarJogosEpic(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer size){
+			@RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(defaultValue = "") String sort){
 		
-		return paginacao(page, size, new ConnectionEpic().obterJogos(jogo));
+		return paginacao(page, size, new ConnectionEpic().obterJogos(jogo, sort));
 	}
 	
 	@Cacheable(value = "SteamCache")
 	@GetMapping("/steam")
 	public ResponseEntity<Page<JogoDto>> pesquisarJogosSteam(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer size){
+			@RequestParam(defaultValue = "10") Integer size,
+			@RequestParam(defaultValue = "") String hide,
+			@RequestParam(defaultValue = "") String sort){
 		
-		return paginacao(page, size, new ConnectionSteam().obterJogos(jogo));
+		return paginacao(page, size, new ConnectionSteam().obterJogos(jogo, hide ,sort));
 	}
 	
 	@Scheduled(fixedRate = 3600000)

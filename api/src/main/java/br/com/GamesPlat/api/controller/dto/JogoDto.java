@@ -46,4 +46,11 @@ public class JogoDto {
 		this.precoFinal = precoFinal;
 	}
 
+	public Double converterPrecoEmDouble() {
+		
+		String precoFinalFormatado = this.precoFinal.replace(",", ".");
+		precoFinalFormatado = precoFinalFormatado.replaceAll("[\\D]{3}", "");
+		return Double.parseDouble(precoFinalFormatado);
+	}
+	
 }

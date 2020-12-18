@@ -12,7 +12,7 @@ import br.com.GamesPlat.api.controller.dto.ListaJogosDto;
 
 public class ConnectionEpic {
 
-	public ListaJogosDto obterJogos(String jogo) {
+	public ListaJogosDto obterJogos(String jogo, String sort) {
 		
 		ListaJogosDto epicJogos = new ListaJogosDto();
 		epicJogos.setPlataforma("Epic Games");
@@ -56,6 +56,10 @@ public class ConnectionEpic {
 			
 		} catch (Exception e) {
 			System.out.println(e);
+		}
+		
+		if(sort.equals("price")) {
+			epicJogos.getJogos().sort((j1, j2) -> Double.compare(j1.converterPrecoEmDouble(), j2.converterPrecoEmDouble()));
 		}
 		
 		return epicJogos;
