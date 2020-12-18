@@ -37,14 +37,19 @@ public class SearchController {
 
 		ListaPlataformasDto plataformas = new ListaPlataformasDto();
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("GOG", pesquisarJogosGog(jogo, page+1, size).getBody().getContent()));
+		plataformas.getPlataformas().add(new ListaJogosDto("GOG", pesquisarJogosGog(jogo, page, size).getBody().getContent()));
 		
 		plataformas.getPlataformas().add(new ListaJogosDto("STEAM", pesquisarJogosSteam(jogo, page, size).getBody().getContent()));
 		
 		plataformas.getPlataformas().add(new ListaJogosDto("Epic Games", pesquisarJogosEpic(jogo, page, size).getBody().getContent())); 
 		
+		int total = 0;
+		for (int i = 0; i < plataformas.getPlataformas().size(); i++) {
+			total += plataformas.getPlataformas().get(i).getJogos().size();
+		}
+		
 		Pageable pageable = PageRequest.of(page, size);
-		Page<ListaJogosDto> pageNum = new PageImpl<ListaJogosDto>(plataformas.getPlataformas(), pageable, size*3);
+		Page<ListaJogosDto> pageNum = new PageImpl<ListaJogosDto>(plataformas.getPlataformas(), pageable, total);
 		
 		return ResponseEntity.ok(pageNum);
 	}
@@ -52,15 +57,15 @@ public class SearchController {
 	@GetMapping("/gog")
 	public ResponseEntity<Page<JogoDto>> pesquisarJogosGog(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "6") Integer size){
+			@RequestParam(defaultValue = "10") Integer size){
 		
-		return paginacao(page+1, size, new ConnectionGog().obterJogos(jogo));
+		return paginacao(page, size, new ConnectionGog().obterJogos(jogo));
 	}
 	
 	@GetMapping("/epic")
 	public ResponseEntity<Page<JogoDto>> pesquisarJogosEpic(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "6") Integer size){
+			@RequestParam(defaultValue = "10") Integer size){
 		
 		return paginacao(page, size, new ConnectionEpic().obterJogos(jogo));
 	}
@@ -69,7 +74,7 @@ public class SearchController {
 	@GetMapping("/steam")
 	public ResponseEntity<Page<JogoDto>> pesquisarJogosSteam(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "6") Integer size){
+			@RequestParam(defaultValue = "10") Integer size){
 		
 		return paginacao(page, size, new ConnectionSteam().obterJogos(jogo));
 	}
@@ -85,7 +90,7 @@ public class SearchController {
 		pageHolder.setPage(page);      
 		
 		Pageable pageable = PageRequest.of(page, size);
-		Page<JogoDto> pageNum = new PageImpl<JogoDto>(pageHolder.getPageList(), pageable, pageHolder.getPageCount());
+		Page<JogoDto> pageNum = new PageImpl<JogoDto>(pageHolder.getPageList(), pageable, listaJogosDto.getJogos().size());
 		
 		return ResponseEntity.ok(pageNum);
 	}
