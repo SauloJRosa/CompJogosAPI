@@ -2,6 +2,8 @@ package br.com.GamesPlat.api.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,8 +23,7 @@ import br.com.GamesPlat.api.controller.connection.ConnectionEpic;
 import br.com.GamesPlat.api.controller.connection.ConnectionGog;
 import br.com.GamesPlat.api.controller.connection.ConnectionSteam;
 import br.com.GamesPlat.api.controller.dto.JogoDto;
-import br.com.GamesPlat.api.controller.dto.ListaJogosDto;
-import br.com.GamesPlat.api.controller.dto.ListaPlataformasDto;
+import br.com.GamesPlat.api.controller.ordenacao.Ordenacao;
 
 @RestController
 @RequestMapping("/search")
@@ -30,30 +31,23 @@ public class SearchController {
 
 	@Cacheable(value = "AllPlatformsCache")
 	@GetMapping
-	public ResponseEntity<Page<ListaJogosDto>> pesquisarJogos(String jogo,
+	public ResponseEntity<Page<JogoDto>> pesquisarJogos(String jogo,
 			@RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "6") Integer size,
 			@RequestParam(defaultValue = "") String hide,
 			@RequestParam(defaultValue = "") String sort)
 			throws URISyntaxException, IOException, InterruptedException {
 
-		ListaPlataformasDto plataformas = new ListaPlataformasDto();
+		List<JogoDto> jogos = new ArrayList<>();
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("GOG", pesquisarJogosGog(jogo, page, size, hide, sort).getBody().getContent()));
+		jogos.addAll(new ConnectionGog().obterJogos(jogo, hide, sort)); 
+		jogos.addAll(new ConnectionSteam().obterJogos(jogo, hide, sort));
+		jogos.addAll(new ConnectionEpic().obterJogos(jogo, sort));
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("STEAM", pesquisarJogosSteam(jogo, page, size, hide, sort).getBody().getContent()));
+		Ordenacao.ordenarPorPreco(sort, jogos);
 		
-		plataformas.getPlataformas().add(new ListaJogosDto("Epic Games", pesquisarJogosEpic(jogo, page, size, sort).getBody().getContent())); 
+		return paginacao(page, size, jogos);
 		
-		int total = 0;
-		for (int i = 0; i < plataformas.getPlataformas().size(); i++) {
-			total += plataformas.getPlataformas().get(i).getJogos().size();
-		}
-		
-		Pageable pageable = PageRequest.of(page, size);
-		Page<ListaJogosDto> pageNum = new PageImpl<ListaJogosDto>(plataformas.getPlataformas(), pageable, total);
-		
-		return ResponseEntity.ok(pageNum);
 	}
 	
 	@GetMapping("/gog")
@@ -91,13 +85,13 @@ public class SearchController {
 	public void evictAllcachesAtIntervals() {
 	}
 	
-	private ResponseEntity<Page<JogoDto>> paginacao(Integer page, Integer size, ListaJogosDto listaJogosDto) {
-		PagedListHolder<JogoDto> pageHolder = new PagedListHolder<JogoDto>(listaJogosDto.getJogos());
+	private ResponseEntity<Page<JogoDto>> paginacao(Integer page, Integer size, List<JogoDto> listaJogosDto) {
+		PagedListHolder<JogoDto> pageHolder = new PagedListHolder<JogoDto>(listaJogosDto);
 		pageHolder.setPageSize(size); 
 		pageHolder.setPage(page);      
 		
 		Pageable pageable = PageRequest.of(page, size);
-		Page<JogoDto> pageNum = new PageImpl<JogoDto>(pageHolder.getPageList(), pageable, listaJogosDto.getJogos().size());
+		Page<JogoDto> pageNum = new PageImpl<JogoDto>(pageHolder.getPageList(), pageable, listaJogosDto.size());
 		
 		return ResponseEntity.ok(pageNum);
 	}

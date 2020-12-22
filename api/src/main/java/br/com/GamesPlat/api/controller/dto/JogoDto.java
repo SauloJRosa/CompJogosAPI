@@ -6,12 +6,43 @@ public class JogoDto {
 	private String precoOriginal;
 	private String desconto;
 	private String precoFinal;
+	private String plataforma;
+	private String thumbnail;
+	private String url;
 
-	public JogoDto(String titulo, String precoOriginal, String desconto, String precoFinal) {
+	public JogoDto(String titulo, String precoOriginal, String desconto, String precoFinal, String thumbnail,
+			String url, String plataforma) {
 		this.titulo = titulo;
 		this.precoOriginal = precoOriginal;
 		this.desconto = desconto + "%";
 		this.precoFinal = precoFinal;
+		this.thumbnail = thumbnail;
+		this.plataforma = plataforma;
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+
+	public String getPlataforma() {
+		return plataforma;
+	}
+
+	public void setPlataforma(String plataforma) {
+		this.plataforma = plataforma;
 	}
 
 	public String getTitulo() {
@@ -47,10 +78,10 @@ public class JogoDto {
 	}
 
 	public Double converterPrecoEmDouble() {
-		
+
 		String precoFinalFormatado = this.precoFinal.replace(",", ".");
 		precoFinalFormatado = precoFinalFormatado.replaceAll("[\\D]{3}", "");
 		return Double.parseDouble(precoFinalFormatado);
 	}
-	
+
 }

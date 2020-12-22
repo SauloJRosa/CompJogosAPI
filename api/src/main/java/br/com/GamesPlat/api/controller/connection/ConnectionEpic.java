@@ -1,6 +1,8 @@
 package br.com.GamesPlat.api.controller.connection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -8,14 +10,13 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.GamesPlat.api.controller.dto.JogoDto;
-import br.com.GamesPlat.api.controller.dto.ListaJogosDto;
+import br.com.GamesPlat.api.controller.ordenacao.Ordenacao;
 
 public class ConnectionEpic {
 
-	public ListaJogosDto obterJogos(String jogo, String sort) {
+	public List<JogoDto> obterJogos(String jogo, String sort) {
 		
-		ListaJogosDto epicJogos = new ListaJogosDto();
-		epicJogos.setPlataforma("Epic Games");
+		List<JogoDto> epicJogos = new ArrayList<>();
 		
 		try {
 			
@@ -45,24 +46,36 @@ public class ConnectionEpic {
 			
 			int max = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").length();
 			for (int i = 0; i < max ; i++) {
+				
+				String title = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getString("title");
+				String originalPrice = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getJSONObject("fmtPrice").getString("originalPrice");
+				
+				String desconto = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getString("discount");
+				String descontoFormatado = String.valueOf((Double.parseDouble(desconto)/100));
+				
+				String totalPrice = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getJSONObject("fmtPrice").getString("discountPrice");
+				
+				String thumbnail = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").getJSONObject(1).getString("url");
+				
+				String urlJogo = "https://www.epicgames.com/store/pt-BR/product/" + myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getString("productSlug");
+				
 				JogoDto game = new JogoDto(
-						myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getString("title"),
-						myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getJSONObject("fmtPrice").getString("originalPrice"),
-						myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getString("discount"),
-						myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getJSONObject("fmtPrice").getString("discountPrice")
+						title,
+						originalPrice,
+						descontoFormatado,
+						totalPrice,
+						thumbnail,
+						urlJogo,
+						"Epic Games"
 						);
-				epicJogos.getJogos().add(game);
+				epicJogos.add(game);
 			}
 			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
-		if(sort.equals("price")) {
-			epicJogos.getJogos().sort((j1, j2) -> Double.compare(j1.converterPrecoEmDouble(), j2.converterPrecoEmDouble()));
-		}
-		
-		return epicJogos;
+		return Ordenacao.ordenarPorPreco(sort, epicJogos);
 		
 	}
 	

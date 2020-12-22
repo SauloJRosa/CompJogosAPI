@@ -6,17 +6,16 @@ import java.util.List;
 import org.json.JSONObject;
 
 import br.com.GamesPlat.api.controller.dto.JogoDto;
-import br.com.GamesPlat.api.controller.dto.ListaJogosDto;
+import br.com.GamesPlat.api.controller.ordenacao.Ordenacao;
 
 public class ConnectionSteam {
 
-public ListaJogosDto obterJogos(String jogo, String hide, String sort) {
+public List<JogoDto> obterJogos(String jogo, String hide, String sort) {
 		
 		String url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
 		JSONObject myresponse = new ConexaoAPIExterna().Conexao(url);
 		
-		ListaJogosDto steamJogos = new ListaJogosDto();
-		steamJogos.setPlataforma("STEAM");
+		List<JogoDto> steamJogos = new ArrayList<>();
 		
 		List<String> ids = new ArrayList<>();
 		
@@ -58,19 +57,31 @@ public ListaJogosDto obterJogos(String jogo, String hide, String sort) {
 							myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("name"),
 							precoOriginal,
 							desconto,
-							precoFinal
+							precoFinal,
+							myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("header_image"),
+							"https://store.steampowered.com/app/" + ids.get(i),
+							"STEAM"
 							);
-					steamJogos.getJogos().add(game);
+					steamJogos.add(game);
 					
 				}else {
 					try {
-						JogoDto game = new JogoDto(
-								myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("name"),
-								myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("initial_formatted"),
-								myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("discount_percent"),
-								myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("final_formatted")
-								);
-						steamJogos.getJogos().add(game);
+						
+						if (myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("currency").equals("BRL")) {
+							JogoDto game = new JogoDto(
+									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("name"),
+									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("initial_formatted"),
+									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("discount_percent"),
+									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("final_formatted"),
+									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("header_image"),
+									"https://store.steampowered.com/app/" + ids.get(i),
+									"STEAM"
+									);
+							steamJogos.add(game);
+						} else {
+							continue;
+						}
+						
 					} catch (Exception e) {
 						continue;
 					}
@@ -81,11 +92,7 @@ public ListaJogosDto obterJogos(String jogo, String hide, String sort) {
 			System.out.println(e);
 		}
 		
-		if(sort.equals("price")) {
-			steamJogos.getJogos().sort((j1, j2) -> Double.compare(j1.converterPrecoEmDouble(), j2.converterPrecoEmDouble()));
-		}
-		
-		return steamJogos;
+		return Ordenacao.ordenarPorPreco(sort, steamJogos);
 	}
 	
 }
