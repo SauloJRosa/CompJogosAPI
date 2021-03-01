@@ -80,7 +80,7 @@ public class JogoDto {
 	public Double converterPrecoEmDouble() {
 
 		String precoFinalFormatado = this.precoFinal.replace(",", ".");
-		precoFinalFormatado = precoFinalFormatado.replaceAll("[\\D]{3}", "");
+		precoFinalFormatado = precoFinalFormatado.replaceAll("[\\D]{1}", "");
 		return Double.parseDouble(precoFinalFormatado);
 	}
 

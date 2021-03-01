@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -33,8 +34,10 @@ public class Usuario implements UserDetails {
 	@OneToMany(mappedBy = "autor")
 	private List<Comentario> comentarios = new ArrayList<>();
 
+	@ManyToOne
+	private Provider provider;
+	
 	public Usuario() {
-		
 	}
 	
 	public Usuario(String nickname, String senha, String email) {
@@ -42,7 +45,13 @@ public class Usuario implements UserDetails {
 		this.senha = senha;
 		this.email = email;
 	}
-
+	
+	public Usuario(String nickname, String senha, String email, Provider provider) {
+		this.nickname = nickname;
+		this.senha = senha;
+		this.email = email;
+		this.provider = provider;
+	}
 	
 	public String getNickname() {
 		return nickname;

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class ConexaoAPIExterna {
 	
-	protected JSONObject Conexao(String url) {
+	public JSONObject Conexao(String url) {
 
 		try {
 
@@ -36,7 +36,7 @@ public class ConexaoAPIExterna {
 
 	}
 	
-	protected JSONObject ConexaoPost(String url, String body) {
+	public JSONObject ConexaoPost(String url, String body) {
 		
 		try {
 			

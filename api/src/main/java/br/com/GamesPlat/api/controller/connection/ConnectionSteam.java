@@ -67,7 +67,7 @@ public List<JogoDto> obterJogos(String jogo, String hide, String sort) {
 				}else {
 					try {
 						
-						if (myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("currency").equals("BRL")) {
+						if (myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("currency").equals("USD")) {
 							JogoDto game = new JogoDto(
 									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getString("name"),
 									myresponse2.getJSONObject(String.format("%s", ids.get(i))).getJSONObject("data").getJSONObject("price_overview").getString("initial_formatted"),

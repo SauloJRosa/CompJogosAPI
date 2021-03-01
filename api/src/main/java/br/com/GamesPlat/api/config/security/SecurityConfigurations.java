@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import br.com.GamesPlat.api.repository.UsuarioRepository;
 
@@ -22,13 +23,11 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AutenticacaoService autenticacaoService;
-	
 	@Autowired
 	private TokenService tokenService;
-	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-	
+
 	@Override
 	@Bean
 	protected AuthenticationManager authenticationManager() throws Exception {
@@ -46,16 +45,19 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		http.authorizeRequests()
-			//.antMatchers(HttpMethod.GET,"/user/*").permitAll()
+		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+			.and()
+			.authorizeRequests()
 			.antMatchers(HttpMethod.POST, "/auth").permitAll()
 			.antMatchers(HttpMethod.POST, "/user").permitAll()
-			.antMatchers(HttpMethod.GET, "/search").permitAll()
-			.antMatchers(HttpMethod.GET, "/search/*").permitAll()
+			.antMatchers(HttpMethod.GET, "/search").authenticated()
+			.antMatchers(HttpMethod.GET, "/search/*").authenticated()
 			.anyRequest().authenticated()
 			.and().csrf().disable()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
+		
+		//http.cors().disable();
 		
 	}
 	

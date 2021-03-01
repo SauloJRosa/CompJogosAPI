@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +26,10 @@ import br.com.GamesPlat.api.controller.dto.UsuarioDto;
 import br.com.GamesPlat.api.controller.form.AtualizacaoUsuarioForm;
 import br.com.GamesPlat.api.controller.form.UsuarioForm;
 import br.com.GamesPlat.api.models.Usuario;
+import br.com.GamesPlat.api.repository.ProviderRepository;
 import br.com.GamesPlat.api.repository.UsuarioRepository;
 
+@CrossOrigin(allowedHeaders = "*")
 @RestController
 @RequestMapping("/user")
 public class UsuarioController {
@@ -36,14 +39,18 @@ public class UsuarioController {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	@Autowired
+	private ProviderRepository providerRepository;
 
 	@PostMapping
 	@Transactional
 	public ResponseEntity<UsuarioDto> cadastrar (@RequestBody @Valid UsuarioForm form, UriComponentsBuilder uriBuilder){
 		
+		if (form.getSenha() != null && form.getSenha() != "") {
+			form.setSenha(new BCryptPasswordEncoder().encode(form.getSenha()));
+		}
 		
-		form.setSenha(new BCryptPasswordEncoder().encode(form.getSenha()));
-		Usuario usuario = form.converter(usuarioRepository);
+		Usuario usuario = form.converter(usuarioRepository, providerRepository);
 		usuarioRepository.save(usuario);
 		
 		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(usuario.getId()).toUri();

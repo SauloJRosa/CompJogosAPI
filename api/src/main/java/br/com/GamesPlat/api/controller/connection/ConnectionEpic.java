@@ -25,11 +25,11 @@ public class ConnectionEpic {
 			Map<String, Object> epicRequestVariables = new HashMap<String, Object>();
 			epicRequestVariables.put("category", "games/edition/base|bundles/games|editors");
 			epicRequestVariables.put("count", 30);
-			epicRequestVariables.put("country", "BR");
+			epicRequestVariables.put("country", "US");
 			epicRequestVariables.put("keywords", jogo);
-			epicRequestVariables.put("locale", "pt-BR");
+			epicRequestVariables.put("locale", "en-US");
 			epicRequestVariables.put("sortDir", "DESC");
-			epicRequestVariables.put("allowCountries", "BR");
+			epicRequestVariables.put("allowCountries", "US");
 			epicRequestVariables.put("start", 0);
 			epicRequestVariables.put("tag", "");
 			epicRequestVariables.put("withPrice", true);
@@ -55,7 +55,21 @@ public class ConnectionEpic {
 				
 				String totalPrice = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONObject("price").getJSONObject("totalPrice").getJSONObject("fmtPrice").getString("discountPrice");
 				
-				String thumbnail = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").getJSONObject(1).getString("url");
+				String thumbnail = "";
+				int thumbmax = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").length();
+				
+				for (int j = 0; j < thumbmax ; j++) {
+					
+					if (myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").getJSONObject(j).getString("type").equals("OfferImageWide")) {
+						thumbnail = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").getJSONObject(j).getString("url"); 
+						break;
+					} else {
+						thumbnail = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").getJSONObject(1).getString("url");
+					};
+					
+				}
+				
+				//String thumbnail = myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getJSONArray("keyImages").getJSONObject(1).getString("url");
 				
 				String urlJogo = "https://www.epicgames.com/store/pt-BR/product/" + myresponse.getJSONObject("data").getJSONObject("Catalog").getJSONObject("searchStore").getJSONArray("elements").getJSONObject(i).getString("productSlug");
 				
